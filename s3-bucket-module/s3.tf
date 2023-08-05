@@ -67,7 +67,7 @@ data "aws_iam_policy_document" "hyeonju-s3-bucket-policy" {
     ]
     principals {
       type        = "AWS"
-      identifiers = ["985984781526"]
+      identifiers = ["000000000000"]
     }
     condition {
       test     = "ForAnyValue:StringEquals"
