@@ -67,7 +67,7 @@ data "aws_iam_policy_document" "hyeonju-s3-bucket-policy" {
     ]
     principals {
       type        = "AWS"
-      identifiers = ["000000000000"]
+      identifiers = [var.account_id]
     }
     condition {
       test     = "ForAnyValue:StringEquals"
@@ -87,5 +87,22 @@ data "aws_iam_policy_document" "hyeonju-s3-bucket-policy" {
     resources = [
       "${module.hyeonju-s3-bucket.s3_bucket_arn}/*"
     ]
+  }
+}
+
+
+module "s3-backend" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "3.14.1"
+
+  bucket = "hyeonju-tfstate-bucket"
+
+  acl                      = "private"
+  control_object_ownership = true
+  object_ownership         = "BucketOwnerPreferred"
+
+  versioning = {
+    status     = true
+    mfa_delete = false
   }
 }
