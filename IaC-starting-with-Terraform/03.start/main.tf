@@ -3,25 +3,58 @@
 # ${path.module} ?
 # - 실행되는 테라폼 모듈의 파일 시스템 경로.
 
-terraform {
-  required_version = ">=1.0.0"
-  required_providers {
-    local = {
-      source  = "hashicorp/local"
-      version = ">=2.0.0"
-    }
-  }
-  backend "local" {
-    path = "state/terraform.tfstate"
+resource "local_file" "abc" {
+  content  = "lifecycle - step 4"
+  filename = "${path.module}/abc.txt"
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = [content]
   }
 }
 
-resource "local_file" "abc" {
-  content  = "123456!"
-  filename = "${path.module}/abc.txt"
+data "local_file" "abc" {
+  filename = local_file.abc.filename
 }
 
 resource "local_file" "def" {
-  content  = "def!"
-  filename = "${path.module}/def.txt"
+  depends_on = [local_file.abc]
+  content    = data.local_file.abc.filename
+  filename   = "${path.module}/def.txt"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
+
+# variable "file_name" {
+#   default = "step0.txt"
+# }
+
+# resource "local_file" "step6" {
+#   content  = "lifecycle - step 6"
+#   filename = "${path.module}/${var.file_name}"
+
+#   lifecycle {
+#     precondition {
+#       condition     = var.file_name == "step6.txt"
+#       error_message = "file name is not \"step6.txt\""
+#     }
+#   }
+# }
+
+# resource "local_file" "step7" {
+#   content  = ""
+#   filename = "${path.module}/step7.txt"
+
+#   lifecycle {
+#     postcondition {
+#       condition     = self.content != ""
+#       error_message = "content cannot empty"
+#     }
+#   }
+# }
+
+# output "step7_content" {
+#   value = local_file.step7.id
+# }
