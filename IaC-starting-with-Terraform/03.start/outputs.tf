@@ -4,5 +4,6 @@ output "file_id" {
 }
 
 output "file_abspath" {
-  value = abspath(local_file.abc.filename)
+  value     = abspath(local_file.abc.filename)
+  sensitive = true
 }
