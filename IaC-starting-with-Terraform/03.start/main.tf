@@ -58,3 +58,31 @@ resource "local_file" "def" {
 # output "step7_content" {
 #   value = local_file.step7.id
 # }
+
+variable "my_pswd" {
+  default   = "p4ssw@rd"
+  sensitive = true
+}
+
+resource "local_file" "ghi" {
+  content  = var.my_pswd
+  filename = "${path.module}/ghi.txt"
+}
+
+variable "my_var" {
+  default = "var2"
+}
+
+resource "local_file" "jkl" {
+  content  = var.my_var
+  filename = "${path.module}/variable_priority.txt"
+}
+
+variable "prefix" {
+  default = "hello"
+}
+
+resource "local_file" "mno" {
+  content  = local.content
+  filename = "${path.module}/locals.txt"
+}
